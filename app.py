@@ -1,6 +1,6 @@
 import os
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk
 import tkinter.scrolledtext as scrolledtext
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -199,7 +199,6 @@ class SearchApp:
         self.create_widgets()
         if self.config.embedding_url != "":
             self.processor = FileProcessor(self.config, self.logger)
-            messagebox.showinfo("成功", "配置已读取")
             self.logger.info("Configuration saved successfully")
             self.start_observer()
 
@@ -256,11 +255,13 @@ class SearchApp:
         )
 
         # 结果区域
-        self.results = ttk.Treeview(main_frame, columns=('文件', '内容'), 
-                          show='headings', height=15)
+        self.results = ttk.Treeview(
+            main_frame, columns=("文件", "内容"), show="headings", , height=15
+        )
         self.results.column('内容', width=400)  # 扩展列宽
-        self.results.heading('文件', text='文件路径')
-        self.results.heading('内容', text='内容预览')
+        self.results.heading("文件", text="文件路径")
+        self.results.heading("内容", text="内容预览")
+        self.results.pack(fill=tk.BOTH, expand=True, pady=5)
         # 添加详细预览框
         self.preview = scrolledtext.ScrolledText(main_frame, height=10)
         self.preview.pack(fill=tk.BOTH, expand=True, pady=5)
@@ -318,7 +319,6 @@ class SearchApp:
         with open(CONFIG_PATH, "w", encoding="utf8") as f:
             json.dump(config_dict, f, ensure_ascii=False, indent=4)
         self.processor = FileProcessor(self.config, self.logger)
-        messagebox.showinfo("成功", "配置已保存")
         self.logger.info("Configuration saved successfully")
         self.start_observer()
 
@@ -354,7 +354,7 @@ class SearchApp:
 
         # 执行搜索
         results = self.processor.collection.query(
-            query_embeddings=[query_vector], n_results=10
+            query_embeddings=[query_vector], n_results=5
         )
 
         # 显示结果
