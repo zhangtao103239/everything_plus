@@ -199,9 +199,9 @@ class SearchApp:
         self.create_widgets()
         if self.config.embedding_url != "":
             self.processor = FileProcessor(self.config, self.logger)
-            self.start_observer()
             messagebox.showinfo("成功", "配置已读取")
             self.logger.info("Configuration saved successfully")
+            self.start_observer()
 
     def create_widgets(self):
         # 配置面板
@@ -318,9 +318,9 @@ class SearchApp:
         with open(CONFIG_PATH, "w", encoding="utf8") as f:
             json.dump(config_dict, f, ensure_ascii=False, indent=4)
         self.processor = FileProcessor(self.config, self.logger)
-        self.start_observer()
         messagebox.showinfo("成功", "配置已保存")
         self.logger.info("Configuration saved successfully")
+        self.start_observer()
 
     def start_observer(self):
         if self.observer:
@@ -331,7 +331,7 @@ class SearchApp:
         )
         self.observer.start()
         self.logger.info("File monitoring started")
-        self.processor.scan_all_files("/")  # 初始扫描
+        # self.processor.scan_all_files("/")  # 初始扫描
 
     def perform_search(self):
         """执行搜索操作"""
