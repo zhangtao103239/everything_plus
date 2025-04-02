@@ -1,0 +1,10 @@
+watchdog
+chromadb
+aiohttp
+PyPDF2
+python-docx
+textract==1.6.3
+tk
+pandas
+openpyxl
+six

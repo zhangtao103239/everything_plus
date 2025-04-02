@@ -1,0 +1,7 @@
+{
+    "embedding_url": "http://127.0.0.1:1234/v1/embeddings",
+    "embedding_api_key": "",
+    "reranker_url": "",
+    "reranker_api_key": "",
+    "llm_api_url": ""
+}
