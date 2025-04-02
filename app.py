@@ -256,7 +256,7 @@ class SearchApp:
 
         # 结果区域
         self.results = ttk.Treeview(
-            main_frame, columns=("文件", "内容"), show="headings", , height=15
+            main_frame, columns=("文件", "内容"), show="headings", height=15
         )
         self.results.column('内容', width=400)  # 扩展列宽
         self.results.heading("文件", text="文件路径")
