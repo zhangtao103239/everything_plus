@@ -48,12 +48,31 @@ class FileProcessor:
         self.collection = self.client.get_or_create_collection("file_chunks")
         self.processed_files = set()
         self.logger = logger
+        self.load_processed_files()
+
+    def load_processed_files(self):
+        if os.path.exists(self.PROCESSED_RECORD):
+            with open(self.PROCESSED_RECORD, "r") as f:
+                self.processed_files = set(json.load(f))
+        else:
+            self.processed_files = set()
+
+    def save_processed_files(self):
+        with open(self.PROCESSED_RECORD, "w") as f:
+            json.dump(list(self.processed_files), f)
+
+    def scan_all_files(self, directory):
+        for root_dir, _, files in os.walk(directory):
+            for file in files:
+                file_path = os.path.join(root_dir, file)
+                if file_path not in self.processed_files:
+                    self.process_file(file_path)
+        self.save_processed_files()
 
     def is_excluded(self, path: str) -> bool:
         # 排除隐藏文件
-        if os.path.basename(path).startswith(".") or os.path.basename(path).startswith(
-            "~$"
-        ):
+        basePath = os.path.basename(path)
+        if basePath.startswith(".") or basePath.startswith("~$"):
             return True
 
         # 检查扩展名是否在白名单
@@ -304,6 +323,7 @@ class SearchApp:
         )
         self.observer.start()
         self.logger.info("File monitoring started")
+        self.processor.scan_all_files("/")  # 初始扫描
 
     def perform_search(self):
         """执行搜索操作"""
