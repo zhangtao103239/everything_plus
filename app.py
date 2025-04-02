@@ -81,7 +81,7 @@ class FileProcessor:
             return True
 
         # 排除特定目录
-        excluded_dirs = {"__pycache__", "node_modules", "venv"}
+        excluded_dirs = {"__pycache__", "node_modules", "venv", "Program Files"}
         for dir in excluded_dirs:
             if dir in path:
                 return True
@@ -256,13 +256,14 @@ class SearchApp:
         )
 
         # 结果区域
-        self.results = ttk.Treeview(
-            main_frame, columns=("文件", "内容"), show="headings"
-        )
-        self.results.heading("文件", text="文件路径")
-        self.results.heading("内容", text="内容预览")
-        self.results.pack(fill=tk.BOTH, expand=True, pady=5)
-
+        self.results = ttk.Treeview(main_frame, columns=('文件', '内容'), 
+                          show='headings', height=15)
+        self.results.column('内容', width=400)  # 扩展列宽
+        self.results.heading('文件', text='文件路径')
+        self.results.heading('内容', text='内容预览')
+        # 添加详细预览框
+        self.preview = scrolledtext.ScrolledText(main_frame, height=10)
+        self.preview.pack(fill=tk.BOTH, expand=True, pady=5)
         # 状态栏
         self.status = ttk.Label(self.root, text="就绪", anchor=tk.W)
         self.status.pack(side=tk.BOTTOM, fill=tk.X)
@@ -274,7 +275,14 @@ class SearchApp:
             log_frame, state="disabled", height=10
         )
         self.log_display.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-
+        # 绑定选择事件
+        def on_select(event):
+            selected = self.results.selection()
+            if selected:
+                item = self.results.item(selected[0])
+                self.preview.delete(1.0, tk.END)
+                self.preview.insert(tk.END, item['values'][1])
+        self.results.bind('<<TreeviewSelect>>', on_select)
         class GuiLogHandler(logging.Handler):
             def __init__(self, text_widget):
                 super().__init__()
